@@ -23,8 +23,12 @@ Suppose we have a service exposing this interface contract:
 In order to use it in clients, it is sufficient to write this code:
 
 ```c#
-var factory = m_Container.Resolve<IChannelFactory>();
-var channel = factory.Create(channelCreationFactory: m_ChannelCreationFactory);
+container = new WindsorContainer();
+container.Install(new ChannelFactoryWindsorInstaller());
+
+var channelCreationFactory = new ChannelCreationFactory<ITestService>(serviceUri);
+var factory = container.Resolve<IChannelFactory>();
+var channel = factory.Create(channelCreationFactory: channelCreationFactory);
 
 var result = channel.CopyMe(1);
 ```
